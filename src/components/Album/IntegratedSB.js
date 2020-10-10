@@ -45,6 +45,57 @@ export default function FabIntegrationSnackbar(props) {
   const [albumDesc, setalbumDesc] = React.useState('');
   const [albumStart, setalbumStart] = React.useState('');
   const [albumImg, setalbumImg] = React.useState('');
+  const [selectedFile, setSelectedFile] = React.useState(null);
+
+  	// On file select (from the pop up) 
+	const onFileChange = event => { 
+	
+    // Update the state 
+    setSelectedFile(event.target.files[0])
+    
+    }; 
+
+   const onFileUpload = () => { 
+	
+      // Create an object of formData 
+      const formData = new FormData(); 
+      
+      // Update the formData object 
+      formData.append( 
+        "file", 
+        selectedFile, 
+        selectedFile.name 
+      ); 
+      
+      // Details of the uploaded file 
+      console.log(selectedFile); 
+      
+      // Request made to the backend api 
+        // Send formData object 
+        const requestOptions = {
+        method: 'POST',
+        body: formData,
+        redirect: 'follow'
+      };
+      fetch('http://localhost:8080/storage/uploadFile', requestOptions)
+    //   .then(async response => {
+    //       const data = await response;
+    //       console.log(data)
+          
+    //       // check for error response
+    //       if (!response.ok) {
+    //           // get error message from body or default to response status
+    //           const error = (data && data.message) || response.status;
+    //           return Promise.reject(error);    
+    //       }
+    //   })
+    .then(response => response.text())
+    .then(result => console.log(result))
+      .catch(error => {
+          
+          console.error('There was an error!', error);
+      });
+      }; 
 
   const handleChange = event => {
     setalbumName(event.target.value);
@@ -163,6 +214,21 @@ export default function FabIntegrationSnackbar(props) {
             onChange={handleStartChange}
             fullWidth
           />
+          <Button
+  variant="outlined"
+  color="primary"
+  component="label"
+>
+  Upload File
+  <input
+    type="file"
+    style={{ display: "none" }}
+    onChange={onFileChange}
+  />
+</Button>
+          <Button variant="outlined" color="primary" onClick={onFileUpload} >
+            Upload Image
+          </Button>
             <TextField
             required
             autoFocus
