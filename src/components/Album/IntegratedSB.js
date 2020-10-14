@@ -90,7 +90,9 @@ export default function FabIntegrationSnackbar(props) {
     //       }
     //   })
     .then(response => response.text())
-    .then(result => console.log(result))
+    .then((result) => {console.log(result)
+                       setalbumImg(result)
+            })
       .catch(error => {
           
           console.error('There was an error!', error);
