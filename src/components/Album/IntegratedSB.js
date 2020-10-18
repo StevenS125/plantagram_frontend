@@ -12,6 +12,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useAuth0 } from "../../react-auth0-spa";
+import "../../App.css"
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -46,6 +47,7 @@ export default function FabIntegrationSnackbar(props) {
   const [albumStart, setalbumStart] = React.useState('');
   const [albumImg, setalbumImg] = React.useState('');
   const [selectedFile, setSelectedFile] = React.useState(null);
+  const [prevImg, setprevImg] = React.useState(null)
 
   	// On file select (from the pop up) 
 	const onFileChange = event => { 
@@ -78,25 +80,15 @@ export default function FabIntegrationSnackbar(props) {
         redirect: 'follow'
       };
       fetch('http://localhost:8080/storage/uploadFile', requestOptions)
-    //   .then(async response => {
-    //       const data = await response;
-    //       console.log(data)
-          
-    //       // check for error response
-    //       if (!response.ok) {
-    //           // get error message from body or default to response status
-    //           const error = (data && data.message) || response.status;
-    //           return Promise.reject(error);    
-    //       }
-    //   })
-    .then(response => response.text())
-    .then((result) => {console.log(result)
-                       setalbumImg(result)
-            })
-      .catch(error => {
-          
-          console.error('There was an error!', error);
-      });
+        .then(response => response.text())
+        .then((result) => {console.log(result)
+                          setalbumImg(result)
+                          setprevImg(result)
+                })
+        .catch(error => {
+            
+            console.error('There was an error!', error);
+        });
       }; 
 
   const handleChange = event => {
@@ -216,6 +208,9 @@ export default function FabIntegrationSnackbar(props) {
             onChange={handleStartChange}
             fullWidth
           />
+          { prevImg &&
+          <img className="upLoadimg" src={prevImg} alt="preview of upload" />}
+          <br />
           <Button
   variant="outlined"
   color="primary"
