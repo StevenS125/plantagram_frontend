@@ -11,6 +11,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import ImageSnackBar from "./ImageSnackBar"
 import { useAuth0 } from "../../react-auth0-spa";
 import "../../App.css"
 
@@ -48,13 +49,14 @@ export default function FabIntegrationSnackbar(props) {
   const [albumImg, setalbumImg] = React.useState('');
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [prevImg, setprevImg] = React.useState(null)
+  const [alertState, setAlertState] = React.useState(false)
+  const [uploadState, setUploadState] = React.useState(true);
 
   	// On file select (from the pop up) 
 	const onFileChange = event => { 
-	
     // Update the state 
     setSelectedFile(event.target.files[0])
-    
+    setUploadState(false);
     }; 
 
    const onFileUpload = () => { 
@@ -84,6 +86,7 @@ export default function FabIntegrationSnackbar(props) {
         .then((result) => {console.log(result)
                           setalbumImg(result)
                           setprevImg(result)
+                          setAlertState(true)
                 })
         .catch(error => {
             
@@ -136,6 +139,13 @@ export default function FabIntegrationSnackbar(props) {
       console.log(data)
       setOpen(false);
       props.updateAlbums(data);
+      setSelectedFile(null);
+      setprevImg(null);
+      setalbumImg("");
+      setalbumName("")
+      setalbumDesc("")
+      setalbumStart("")
+      setUploadState(true)
       
       // check for error response
       if (!response.ok) {
@@ -223,7 +233,7 @@ export default function FabIntegrationSnackbar(props) {
     onChange={onFileChange}
   />
 </Button>
-          <Button variant="outlined" color="primary" onClick={onFileUpload} >
+          <Button disabled={uploadState} variant="outlined" color="primary" onClick={onFileUpload} >
             Upload Image
           </Button>
             <TextField
@@ -249,6 +259,7 @@ export default function FabIntegrationSnackbar(props) {
       </Dialog>
       </div>
       )}
+      { alertState && <ImageSnackBar setAlertOpen={alertState} />}
     </React.Fragment>
   );
 }
